@@ -29,7 +29,7 @@ Configurar `src/environments/environment.ts` (desarrollo) y `src/environments/en
 ```typescript
 export const environment = {
   production: false,
-  supabaseUrl: 'https://flkvxdlexwcephuwmirl.supabase.co',
+  supabaseUrl: 'https://flkv********phuwmirl.supabase.co',
   supabaseAnonKey: 'TU_SUPABASE_ANON_KEY'
 };
 ```
