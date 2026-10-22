@@ -1,0 +1,134 @@
+<div class="max-w-7xl mx-auto space-y-4">
+  <!-- HEADER -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-xl font-bold text-slate-900 tracking-tight">Movimientos</h1>
+      <p class="text-xs text-slate-500 mt-0.5">Historial y trazabilidad de entradas, salidas, transferencias y ajustes</p>
+    </div>
+    <div>
+      <button type="button" mat-flat-button color="primary" (click)="abrirRegistrar()">
+        <span class="flex items-center gap-1.5 text-xs font-semibold">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          Registrar movimiento
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-center">
+      <mat-form-field appearance="outline" class="w-full !text-sm">
+        <mat-label>Tipo</mat-label>
+        <mat-select [ngModel]="filtroTipo()" (ngModelChange)="filtroTipo.set($event)">
+          <mat-option value="todos">Todos</mat-option>
+          <mat-option value="entrada">Entrada</mat-option>
+          <mat-option value="salida">Salida</mat-option>
+          <mat-option value="transferencia">Transferencia</mat-option>
+          <mat-option value="ajuste">Ajuste</mat-option>
+          <mat-option value="asignacion">Asignación</mat-option>
+          <mat-option value="devolucion">Devolución</mat-option>
+          <mat-option value="baja">Baja</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full !text-sm">
+        <mat-label>Almacén</mat-label>
+        <mat-select [ngModel]="filtroAlmacen()" (ngModelChange)="filtroAlmacen.set($event)">
+          <mat-option [value]="null">Todos</mat-option>
+          @for (alm of almacenes(); track alm.value) {
+            <mat-option [value]="alm.value">{{ alm.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full !text-sm">
+        <mat-label>Fecha desde</mat-label>
+        <input matInput type="date" [ngModel]="filtroFechaDesde()" (ngModelChange)="filtroFechaDesde.set($event)" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full !text-sm">
+        <mat-label>Fecha hasta</mat-label>
+        <input matInput type="date" [ngModel]="filtroFechaHasta()" (ngModelChange)="filtroFechaHasta.set($event)" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full !text-sm">
+        <mat-label>Búsqueda</mat-label>
+        <input matInput [ngModel]="filtroBusqueda()" (ngModelChange)="filtroBusqueda.set($event)" placeholder="Código, SKU o motivo…" />
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- TABLA -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+    @if (cargando()) {
+      <div class="p-12 text-center text-slate-500">
+        <div class="animate-spin inline-block w-7 h-7 border-4 border-indigo-600 border-t-transparent rounded-full mb-2"></div>
+        <p class="text-xs font-medium">Cargando movimientos…</p>
+      </div>
+    } @else {
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-600">
+          <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 uppercase font-semibold">
+            <tr>
+              <th class="px-4 py-3.5">Fecha</th>
+              <th class="px-4 py-3.5">Tipo</th>
+              <th class="px-4 py-3.5">Activo / Ítem</th>
+              <th class="px-4 py-3.5 text-right">Cant.</th>
+              <th class="px-4 py-3.5">Origen</th>
+              <th class="px-4 py-3.5">Destino</th>
+              <th class="px-4 py-3.5">Usuario destino</th>
+              <th class="px-4 py-3.5">Motivo / Doc.</th>
+              <th class="px-4 py-3.5">Registrado por</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            @for (m of filtrados(); track m.id) {
+              <tr class="hover:bg-slate-50/70 transition">
+                <td class="px-4 py-3.5 whitespace-nowrap text-slate-800 font-medium">
+                  {{ m.fecha | date:'short' }}
+                </td>
+                <td class="px-4 py-3.5">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold capitalize border"
+                    [ngClass]="tipoBadgeClass(m.tipo)">
+                    {{ m.tipo }}
+                  </span>
+                </td>
+                <td class="px-4 py-3.5">
+                  @if (m.activos) {
+                    <span class="font-semibold text-slate-800">{{ m.activos.codigo_activo }}</span>
+                    <span class="text-2xs text-slate-400 block">Activo</span>
+                  } @else if (m.items) {
+                    <span class="font-semibold text-slate-800">{{ m.items.nombre }}</span>
+                    <span class="text-2xs text-slate-400 block font-mono">{{ m.items.sku }}</span>
+                  } @else {
+                    <span class="text-slate-400">—</span>
+                  }
+                </td>
+                <td class="px-4 py-3.5 text-right font-medium text-slate-800">{{ m.cantidad }}</td>
+                <td class="px-4 py-3.5">{{ m.almacen_origen?.nombre || '—' }}</td>
+                <td class="px-4 py-3.5">{{ m.almacen_destino?.nombre || '—' }}</td>
+                <td class="px-4 py-3.5">{{ m.usuario_destino?.nombre_completo || '—' }}</td>
+                <td class="px-4 py-3.5">
+                  <span class="text-slate-700 block">{{ m.motivo || '—' }}</span>
+                  @if (m.documento) {
+                    <span class="text-2xs text-indigo-600 font-mono">Doc: {{ m.documento }}</span>
+                  }
+                </td>
+                <td class="px-4 py-3.5 text-slate-500">{{ m.creador?.nombre_completo || 'Sistema' }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="9" class="px-4 py-12 text-center text-slate-400">
+                  No se encontraron movimientos registrados con los filtros aplicados.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

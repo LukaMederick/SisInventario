@@ -1,0 +1,436 @@
+<div class="h-screen w-screen flex overflow-hidden bg-slate-50 text-slate-800">
+
+  <!-- Mobile Overlay -->
+  @if (mobileMenuOpen()) {
+    <div
+      (click)="closeMobileMenu()"
+      class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 lg:hidden transition-opacity"
+    ></div>
+  }
+
+  <!-- Sidebar -->
+  <aside
+    class="fixed lg:static inset-y-0 left-0 z-50 flex flex-col bg-slate-900 border-r border-slate-800 transition-all duration-300 ease-in-out"
+    [class.w-64]="!sidebarCollapsed()"
+    [class.w-20]="sidebarCollapsed()"
+    [class.-translate-x-full]="!mobileMenuOpen()"
+    [class.translate-x-0]="mobileMenuOpen()"
+    [class.lg:translate-x-0]="true"
+  >
+    <!-- Brand Header -->
+    <div class="h-16 flex items-center justify-between px-4 border-b border-slate-800/80 bg-slate-950/40">
+      <div class="flex items-center gap-3 overflow-hidden">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shrink-0 shadow-md shadow-indigo-600/30">
+          <!-- Heroicon: Server Stack -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 0 1-3-3m3 3a3 3 0 1 0 0 6h13.5a3 3 0 1 0 0-6m-16.5-3a3 3 0 0 1 3-3h13.5a3 3 0 0 1 3 3m-19.5 0a4.5 4.5 0 0 1 .9-2.7L5.75 5.1a3 3 0 0 1 2.4-1.35h7.7a3 3 0 0 1 2.4 1.35l2.1 3.15a4.5 4.5 0 0 1 .9 2.7m-16.5 0h19.5" />
+          </svg>
+        </div>
+        @if (!sidebarCollapsed()) {
+          <div class="flex flex-col truncate">
+            <span class="font-bold text-white text-base tracking-tight leading-tight">SisInventario</span>
+            <span class="text-[11px] text-indigo-400 font-medium">TI & Almacenes</span>
+          </div>
+        }
+      </div>
+      <!-- Mobile Close Button -->
+      <button
+        type="button"
+        (click)="closeMobileMenu()"
+        class="lg:hidden text-slate-400 hover:text-white p-1 rounded-lg"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-1 custom-scrollbar">
+
+      <!-- Dashboard -->
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="bg-indigo-600 text-white font-medium shadow-md shadow-indigo-600/20"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition group text-sm"
+        [title]="sidebarCollapsed() ? 'Dashboard' : ''"
+      >
+        <!-- Heroicon: Squares 2x2 -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-5 h-5 shrink-0">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+        </svg>
+        @if (!sidebarCollapsed()) {
+          <span class="truncate">Dashboard</span>
+        }
+      </a>
+
+      <!-- Almacenes -->
+      <a
+        routerLink="/almacenes"
+        routerLinkActive="bg-indigo-600 text-white font-medium shadow-md shadow-indigo-600/20"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition group text-sm"
+        [title]="sidebarCollapsed() ? 'Almacenes' : ''"
+      >
+        <!-- Heroicon: Building Office 2 -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-5 h-5 shrink-0">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+        </svg>
+        @if (!sidebarCollapsed()) {
+          <span class="truncate">Almacenes</span>
+        }
+      </a>
+
+      <!-- Catálogos (Collapsible Menu) -->
+      <div>
+        <button
+          type="button"
+          (click)="toggleCatalog()"
+          class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition group text-sm"
+          [title]="sidebarCollapsed() ? 'Catálogos' : ''"
+        >
+          <div class="flex items-center gap-3">
+            <!-- Heroicon: Bookmark Square -->
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-5 h-5 shrink-0">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+            </svg>
+            @if (!sidebarCollapsed()) {
+              <span class="truncate">Catálogos</span>
+            }
+          </div>
+          @if (!sidebarCollapsed()) {
+            <!-- Heroicon: Chevron Down -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.75"
+              stroke="currentColor"
+              class="w-4 h-4 transition-transform duration-200"
+              [class.rotate-180]="catalogOpen()"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+          }
+        </button>
+
+        @if (catalogOpen() && !sidebarCollapsed()) {
+          <div class="pl-8 pr-1 py-1 space-y-1">
+            <a
+              routerLink="/catalogos/categorias"
+              routerLinkActive="text-indigo-400 font-semibold"
+              class="block py-1.5 px-3 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-slate-800/40 transition"
+            >
+              Categorías
+            </a>
+            <a
+              routerLink="/catalogos/marcas"
+              routerLinkActive="text-indigo-400 font-semibold"
+              class="block py-1.5 px-3 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-slate-800/40 transition"
+            >
+              Marcas
+            </a>
+            <a
+              routerLink="/catalogos/modelos"
+              routerLinkActive="text-indigo-400 font-semibold"
+              class="block py-1.5 px-3 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-slate-800/40 transition"
+            >
+              Modelos
+            </a>
+            <a
+              routerLink="/catalogos/estados"
+              routerLinkActive="text-indigo-400 font-semibold"
+              class="block py-1.5 px-3 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-slate-800/40 transition"
+            >
+              Estados de Equipo
+            </a>
+            <a
+              routerLink="/catalogos/proveedores"
+              routerLinkActive="text-indigo-400 font-semibold"
+              class="block py-1.5 px-3 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-slate-800/40 transition"
+            >
+              Proveedores
+            </a>
+          </div>
+        }
+      </div>
+
+      <!-- Activos (Equipos) -->
+      <a
+        routerLink="/activos"
+        routerLinkActive="bg-indigo-600 text-white font-medium shadow-md shadow-indigo-600/20"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition group text-sm"
+        [title]="sidebarCollapsed() ? 'Activos / Equipos' : ''"
+      >
+        <!-- Heroicon: Computer Desktop -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-5 h-5 shrink-0">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0H3" />
+        </svg>
+        @if (!sidebarCollapsed()) {
+          <span class="truncate">Activos (Equipos)</span>
+        }
+      </a>
+
+      <!-- Ítems -->
+      <a
+        routerLink="/items"
+        routerLinkActive="bg-indigo-600 text-white font-medium shadow-md shadow-indigo-600/20"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition group text-sm"
+        [title]="sidebarCollapsed() ? 'Ítems' : ''"
+      >
+        <!-- Heroicon: Cube -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-5 h-5 shrink-0">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+        </svg>
+        @if (!sidebarCollapsed()) {
+          <span class="truncate">Ítems</span>
+        }
+      </a>
+
+      <!-- Stock -->
+      <a
+        routerLink="/stock"
+        routerLinkActive="bg-indigo-600 text-white font-medium shadow-md shadow-indigo-600/20"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition group text-sm"
+        [title]="sidebarCollapsed() ? 'Control de Stock' : ''"
+      >
+        <!-- Heroicon: Archive Box -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-5 h-5 shrink-0">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+        </svg>
+        @if (!sidebarCollapsed()) {
+          <span class="truncate">Control de Stock</span>
+        }
+      </a>
+
+      <!-- Movimientos -->
+      <a
+        routerLink="/movimientos"
+        routerLinkActive="bg-indigo-600 text-white font-medium shadow-md shadow-indigo-600/20"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition group text-sm"
+        [title]="sidebarCollapsed() ? 'Movimientos' : ''"
+      >
+        <!-- Heroicon: Arrows Right Left -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-5 h-5 shrink-0">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+        </svg>
+        @if (!sidebarCollapsed()) {
+          <span class="truncate">Movimientos</span>
+        }
+      </a>
+
+      <!-- Asignaciones -->
+      <a
+        routerLink="/asignaciones"
+        routerLinkActive="bg-indigo-600 text-white font-medium shadow-md shadow-indigo-600/20"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition group text-sm"
+        [title]="sidebarCollapsed() ? 'Asignaciones' : ''"
+      >
+        <!-- Heroicon: Identification -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-5 h-5 shrink-0">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+        </svg>
+        @if (!sidebarCollapsed()) {
+          <span class="truncate">Asignaciones</span>
+        }
+      </a>
+
+      <!-- Mantenimientos -->
+      <a
+        routerLink="/mantenimientos"
+        routerLinkActive="bg-indigo-600 text-white font-medium shadow-md shadow-indigo-600/20"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition group text-sm"
+        [title]="sidebarCollapsed() ? 'Mantenimientos' : ''"
+      >
+        <!-- Heroicon: Wrench Screwdriver -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-5 h-5 shrink-0">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75a4.5 4.5 0 0 1-4.884 4.484c-1.076-.091-2.264.07-2.92.726l-7.25 7.25a2.25 2.25 0 0 1-3.182-3.182l7.25-7.25c.656-.656.817-1.844.726-2.92A4.5 4.5 0 0 1 17.25 2.25a4.5 4.5 0 0 1 4.5 4.5Z" />
+        </svg>
+        @if (!sidebarCollapsed()) {
+          <span class="truncate">Mantenimientos</span>
+        }
+      </a>
+
+      <!-- Usuarios y Roles -->
+      <a
+        routerLink="/usuarios"
+        routerLinkActive="bg-indigo-600 text-white font-medium shadow-md shadow-indigo-600/20"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition group text-sm"
+        [title]="sidebarCollapsed() ? 'Usuarios & Roles' : ''"
+      >
+        <!-- Heroicon: User Group -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-5 h-5 shrink-0">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.999-3.199a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
+        </svg>
+        @if (!sidebarCollapsed()) {
+          <span class="truncate">Usuarios & Roles</span>
+        }
+      </a>
+
+      <!-- Auditoría -->
+      <a
+        routerLink="/auditoria"
+        routerLinkActive="bg-indigo-600 text-white font-medium shadow-md shadow-indigo-600/20"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition group text-sm"
+        [title]="sidebarCollapsed() ? 'Auditoría' : ''"
+      >
+        <!-- Heroicon: Document Magnifying Glass -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-5 h-5 shrink-0">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM10.5 7.5v6m3-3h-6" />
+        </svg>
+        @if (!sidebarCollapsed()) {
+          <span class="truncate">Auditoría</span>
+        }
+      </a>
+
+      <!-- Reportes -->
+      <a
+        routerLink="/reportes"
+        routerLinkActive="bg-indigo-600 text-white font-medium shadow-md shadow-indigo-600/20"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition group text-sm"
+        [title]="sidebarCollapsed() ? 'Reportes' : ''"
+      >
+        <!-- Heroicon: Document Chart Bar -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-5 h-5 shrink-0">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+        </svg>
+        @if (!sidebarCollapsed()) {
+          <span class="truncate">Reportes</span>
+        }
+      </a>
+
+    </nav>
+
+    <!-- Sidebar Footer with Collapse Toggle -->
+    <div class="p-3 border-t border-slate-800/80 hidden lg:block">
+      <button
+        type="button"
+        (click)="toggleSidebar()"
+        class="w-full flex items-center justify-center p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
+        [title]="sidebarCollapsed() ? 'Expandir menú' : 'Colapsar menú'"
+      >
+        @if (sidebarCollapsed()) {
+          <!-- Heroicon: Chevron Double Right -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
+          </svg>
+        } @else {
+          <!-- Heroicon: Chevron Double Left -->
+          <div class="flex items-center gap-2 text-xs font-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
+            </svg>
+            <span>Colapsar barra</span>
+          </div>
+        }
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Layout -->
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+    <!-- Topbar -->
+    <header class="h-16 bg-white border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between z-30 shrink-0 shadow-sm">
+      <div class="flex items-center gap-3">
+        <!-- Mobile Open Hamburger -->
+        <button
+          type="button"
+          (click)="toggleMobileMenu()"
+          class="lg:hidden p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+        >
+          <!-- Heroicon: Bars 3 -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </button>
+
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-semibold text-slate-700 hidden sm:inline">Sistema de Inventario</span>
+          <span class="text-slate-300 hidden sm:inline">/</span>
+          <span class="text-xs sm:text-sm text-slate-500 font-medium">Equipos Informáticos TI</span>
+        </div>
+      </div>
+
+      <!-- Right Header Actions -->
+      <div class="flex items-center gap-4">
+        <!-- Role Badge -->
+        <div class="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
+          [class.bg-indigo-50]="userRole() === 'Administrador'"
+          [class.text-indigo-700]="userRole() === 'Administrador'"
+          [class.border]="true"
+          [class.border-indigo-200]="userRole() === 'Administrador'"
+          [class.bg-emerald-50]="userRole() === 'Encargado de almacén'"
+          [class.text-emerald-700]="userRole() === 'Encargado de almacén'"
+          [class.border-emerald-200]="userRole() === 'Encargado de almacén'"
+          [class.bg-sky-50]="userRole() === 'Técnico'"
+          [class.text-sky-700]="userRole() === 'Técnico'"
+          [class.border-sky-200]="userRole() === 'Técnico'"
+          [class.bg-amber-50]="userRole() === 'Auditor'"
+          [class.text-amber-700]="userRole() === 'Auditor'"
+          [class.border-amber-200]="userRole() === 'Auditor'"
+        >
+          <!-- Heroicon: Shield Check -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5">
+            <path fill-rule="evenodd" d="M9.661 2.237a.531.531 0 0 1 .678 0 11.947 11.947 0 0 0 7.078 2.749.5.5 0 0 1 .479.425c.069.52.104 1.05.104 1.589 0 5.162-3.26 9.563-7.834 11.256a.48.48 0 0 1-.332 0C5.26 16.564 2 12.163 2 7c0-.538.035-1.069.104-1.589a.5.5 0 0 1 .48-.425 11.947 11.947 0 0 0 7.077-2.75ZM10 5.135 5.56 7.042c-.005.358-.007.72-.007 1.084 0 4.148 2.508 7.747 6.137 9.283 3.629-1.536 6.137-5.135 6.137-9.283 0-.365-.002-.726-.007-1.084L10 5.135Z" clip-rule="evenodd" />
+          </svg>
+          <span>{{ userRole() }}</span>
+        </div>
+
+        <!-- User Menu Button -->
+        <button
+          type="button"
+          [matMenuTriggerFor]="userMenu"
+          class="flex items-center gap-3 p-1.5 rounded-xl hover:bg-slate-100 transition cursor-pointer"
+        >
+          <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white font-semibold text-xs flex items-center justify-center shadow-sm">
+            {{ userInitials() }}
+          </div>
+          <div class="text-left hidden md:block">
+            <div class="text-xs font-semibold text-slate-800 leading-tight">
+              {{ user()?.nombre_completo ?? 'Administrador' }}
+            </div>
+            <div class="text-[11px] text-slate-500 leading-tight">
+              {{ user()?.email ?? 'admin@test.com' }}
+            </div>
+          </div>
+          <!-- Heroicon: Chevron Down -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-slate-400">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+          </svg>
+        </button>
+
+        <mat-menu #userMenu="matMenu" xPosition="before" class="rounded-xl shadow-xl border border-slate-100 py-1">
+          <div class="px-4 py-3 border-b border-slate-100">
+            <p class="text-xs font-semibold text-slate-800">{{ user()?.nombre_completo }}</p>
+            <p class="text-xs text-slate-500">{{ user()?.email }}</p>
+            <div class="mt-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-indigo-50 text-indigo-700">
+              Rol: {{ userRole() }}
+            </div>
+          </div>
+
+          <button
+            mat-menu-item
+            (click)="logout()"
+            class="text-red-600 hover:bg-red-50"
+          >
+            <!-- Heroicon: Arrow Right On Rectangle -->
+            <div class="flex items-center gap-2 text-red-600 font-medium text-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-4 h-4 text-red-600">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+              </svg>
+              <span>Cerrar Sesión</span>
+            </div>
+          </button>
+        </mat-menu>
+      </div>
+    </header>
+
+    <!-- Scrollable Router Outlet Body -->
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
+      <app-breadcrumbs></app-breadcrumbs>
+      <router-outlet></router-outlet>
+    </main>
+
+  </div>
+</div>

@@ -1,0 +1,195 @@
+<div class="max-w-7xl mx-auto space-y-6">
+  <!-- HEADER -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-xl font-bold text-slate-900 tracking-tight">Centro de Reportes</h1>
+      <p class="text-xs text-slate-500 mt-0.5">Generación, visualización y exportación de datos a Excel (.xlsx) y PDF (.pdf)</p>
+    </div>
+  </div>
+
+  <!-- GRID DE REPORTES (6 CARDS) -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <!-- REPORTE 1: STOCK POR ALMACÉN -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+      <div class="space-y-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" /></svg>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-slate-900">Stock por Almacén</h2>
+            <p class="text-2xs text-slate-500">Existencias físicas y niveles de alerta</p>
+          </div>
+        </div>
+        <mat-form-field appearance="outline" class="w-full !text-xs !mb-0">
+          <mat-label>Almacén</mat-label>
+          <mat-select [(ngModel)]="r1AlmacenId">
+            <mat-option [value]="null">Todos los almacenes</mat-option>
+            @for (a of almacenes(); track a.value) {
+              <mat-option [value]="a.value">{{ a.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="pt-4 border-t border-slate-100 flex items-center justify-between gap-1 mt-4">
+        <button type="button" mat-button (click)="ver(1)" class="!text-xs">Ver</button>
+        <div class="flex gap-1.5">
+          <button type="button" mat-stroked-button (click)="descargarExcel(1)" class="!h-8 !px-2.5 !text-xs !text-emerald-700">Excel</button>
+          <button type="button" mat-flat-button color="primary" (click)="descargarPDF(1)" class="!h-8 !px-2.5 !text-xs">PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORTE 2: EQUIPOS POR ESTADO -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+      <div class="space-y-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" /></svg>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-slate-900">Equipos por Estado</h2>
+            <p class="text-2xs text-slate-500">Distribución porcentual operativa</p>
+          </div>
+        </div>
+        <mat-form-field appearance="outline" class="w-full !text-xs !mb-0">
+          <mat-label>Almacén (Opcional)</mat-label>
+          <mat-select [(ngModel)]="r2AlmacenId">
+            <mat-option [value]="null">Todos los almacenes</mat-option>
+            @for (a of almacenes(); track a.value) {
+              <mat-option [value]="a.value">{{ a.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="pt-4 border-t border-slate-100 flex items-center justify-between gap-1 mt-4">
+        <button type="button" mat-button (click)="ver(2)" class="!text-xs">Ver</button>
+        <div class="flex gap-1.5">
+          <button type="button" mat-stroked-button (click)="descargarExcel(2)" class="!h-8 !px-2.5 !text-xs !text-emerald-700">Excel</button>
+          <button type="button" mat-flat-button color="primary" (click)="descargarPDF(2)" class="!h-8 !px-2.5 !text-xs">PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORTE 3: EQUIPOS POR ALMACÉN -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+      <div class="space-y-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" /></svg>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-slate-900">Equipos por Almacén</h2>
+            <p class="text-2xs text-slate-500">Resumen integral por sede física</p>
+          </div>
+        </div>
+        <p class="text-xs text-slate-500 py-3 bg-slate-50 rounded-xl p-3 border border-slate-100">
+          Consolida totales, disponibles, asignados y en mantenimiento para todos los almacenes.
+        </p>
+      </div>
+      <div class="pt-4 border-t border-slate-100 flex items-center justify-between gap-1 mt-4">
+        <button type="button" mat-button (click)="ver(3)" class="!text-xs">Ver</button>
+        <div class="flex gap-1.5">
+          <button type="button" mat-stroked-button (click)="descargarExcel(3)" class="!h-8 !px-2.5 !text-xs !text-emerald-700">Excel</button>
+          <button type="button" mat-flat-button color="primary" (click)="descargarPDF(3)" class="!h-8 !px-2.5 !text-xs">PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORTE 4: MOVIMIENTOS POR FECHA -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+      <div class="space-y-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-slate-900">Movimientos de Inventario</h2>
+            <p class="text-2xs text-slate-500">Trazabilidad por fechas y tipo</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <mat-form-field appearance="outline" class="w-full !text-xs !mb-0">
+            <mat-label>Desde</mat-label>
+            <input matInput type="date" [(ngModel)]="r4Desde" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full !text-xs !mb-0">
+            <mat-label>Hasta</mat-label>
+            <input matInput type="date" [(ngModel)]="r4Hasta" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="pt-4 border-t border-slate-100 flex items-center justify-between gap-1 mt-4">
+        <button type="button" mat-button (click)="ver(4)" class="!text-xs">Ver</button>
+        <div class="flex gap-1.5">
+          <button type="button" mat-stroked-button (click)="descargarExcel(4)" class="!h-8 !px-2.5 !text-xs !text-emerald-700">Excel</button>
+          <button type="button" mat-flat-button color="primary" (click)="descargarPDF(4)" class="!h-8 !px-2.5 !text-xs">PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORTE 5: MANTENIMIENTOS REALIZADOS -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+      <div class="space-y-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.04a4.5 4.5 0 0 0 4.486-6.32l-3.27 3.27-2.684-.383-.383-2.684 3.27-3.27a4.5 4.5 0 0 0-6.32 4.486c.148.58.124 1.193-.04 1.743Z" /></svg>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-slate-900">Mantenimientos y Costos</h2>
+            <p class="text-2xs text-slate-500">Historial con suma total de costos</p>
+          </div>
+        </div>
+        <mat-form-field appearance="outline" class="w-full !text-xs !mb-0">
+          <mat-label>Proveedor</mat-label>
+          <mat-select [(ngModel)]="r5ProveedorId">
+            <mat-option [value]="null">Todos los proveedores</mat-option>
+            @for (p of proveedores(); track p.value) {
+              <mat-option [value]="p.value">{{ p.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="pt-4 border-t border-slate-100 flex items-center justify-between gap-1 mt-4">
+        <button type="button" mat-button (click)="ver(5)" class="!text-xs">Ver</button>
+        <div class="flex gap-1.5">
+          <button type="button" mat-stroked-button (click)="descargarExcel(5)" class="!h-8 !px-2.5 !text-xs !text-emerald-700">Excel</button>
+          <button type="button" mat-flat-button color="primary" (click)="descargarPDF(5)" class="!h-8 !px-2.5 !text-xs">PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORTE 6: EQUIPOS ASIGNADOS -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+      <div class="space-y-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" /></svg>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-slate-900">Equipos Asignados</h2>
+            <p class="text-2xs text-slate-500">Préstamos y custodia de activos</p>
+          </div>
+        </div>
+        <mat-form-field appearance="outline" class="w-full !text-xs !mb-0">
+          <mat-label>Usuario</mat-label>
+          <mat-select [(ngModel)]="r6UsuarioId">
+            <mat-option [value]="null">Todos los usuarios</mat-option>
+            @for (u of usuarios(); track u.value) {
+              <mat-option [value]="u.value">{{ u.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="pt-4 border-t border-slate-100 flex items-center justify-between gap-1 mt-4">
+        <button type="button" mat-button (click)="ver(6)" class="!text-xs">Ver</button>
+        <div class="flex gap-1.5">
+          <button type="button" mat-stroked-button (click)="descargarExcel(6)" class="!h-8 !px-2.5 !text-xs !text-emerald-700">Excel</button>
+          <button type="button" mat-flat-button color="primary" (click)="descargarPDF(6)" class="!h-8 !px-2.5 !text-xs">PDF</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

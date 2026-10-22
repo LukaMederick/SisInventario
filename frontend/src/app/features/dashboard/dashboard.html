@@ -1,0 +1,187 @@
+<div class="space-y-6 max-w-7xl mx-auto">
+  <!-- HEADER -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Panel de Control</h1>
+      <p class="text-xs text-slate-500 mt-0.5">Resumen de inventario, activos y estado operativo</p>
+    </div>
+    <button type="button" (click)="cargarDashboard()"
+      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-sm transition">
+      <mat-icon class="!w-4 !h-4 !text-base">refresh</mat-icon>
+      Actualizar
+    </button>
+  </div>
+
+  <!-- SKELETON LOADER / KPIS -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    @if (cargando()) {
+      @for (i of [1, 2, 3, 4]; track i) {
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm animate-pulse space-y-3">
+          <div class="flex justify-between items-center">
+            <div class="h-3 bg-slate-200 rounded w-24"></div>
+            <div class="w-10 h-10 bg-slate-200 rounded-xl"></div>
+          </div>
+          <div class="h-7 bg-slate-200 rounded w-16"></div>
+        </div>
+      }
+    } @else {
+      <!-- Card 1: Total Equipos -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Equipos</p>
+          <p class="text-2xl font-bold text-slate-900 mt-1">{{ kpis().total }}</p>
+          <span class="text-2xs text-indigo-600 font-medium">Equipos activos</span>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+          <mat-icon>computer</mat-icon>
+        </div>
+      </div>
+
+      <!-- Card 2: Asignados -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Equipos Asignados</p>
+          <p class="text-2xl font-bold text-slate-900 mt-1">{{ kpis().asignados }}</p>
+          <span class="text-2xs text-blue-600 font-medium">En uso por usuarios</span>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+          <mat-icon>assignment_ind</mat-icon>
+        </div>
+      </div>
+
+      <!-- Card 3: En Mantenimiento -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">En Mantenimiento</p>
+          <p class="text-2xl font-bold text-slate-900 mt-1">{{ kpis().mantenimiento }}</p>
+          <span class="text-2xs text-amber-600 font-medium">En revisión o taller</span>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+          <mat-icon>build</mat-icon>
+        </div>
+      </div>
+
+      <!-- Card 4: Stock Bajo -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Alerta Stock Bajo</p>
+          <p class="text-2xl font-bold text-slate-900 mt-1">{{ kpis().stockBajo }}</p>
+          <span class="text-2xs text-rose-600 font-medium">Insumos críticos</span>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+          <mat-icon>warning</mat-icon>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- GRÁFICOS (2 COLUMNAS) -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Gráfico 1: Equipos por Almacén -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-bold text-slate-900">Equipos por Almacén</h2>
+        <span class="text-2xs text-slate-400">Distribución física</span>
+      </div>
+      <div class="h-64 flex items-center justify-center relative">
+        @if (cargando()) {
+          <div class="animate-pulse bg-slate-100 rounded-xl w-full h-full"></div>
+        } @else if (barChartData().labels?.length) {
+          <canvas baseChart [data]="barChartData()" [options]="barChartOptions" [type]="'bar'"></canvas>
+        } @else {
+          <p class="text-xs text-slate-400">Sin datos de equipos registrados.</p>
+        }
+      </div>
+    </div>
+
+    <!-- Gráfico 2: Equipos por Estado -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-bold text-slate-900">Equipos por Estado</h2>
+        <span class="text-2xs text-slate-400">Condición operativa</span>
+      </div>
+      <div class="h-64 flex items-center justify-center relative">
+        @if (cargando()) {
+          <div class="animate-pulse bg-slate-100 rounded-xl w-full h-full"></div>
+        } @else if (doughnutChartData().labels?.length) {
+          <canvas baseChart [data]="doughnutChartData()" [options]="doughnutChartOptions" [type]="'doughnut'"></canvas>
+        } @else {
+          <p class="text-xs text-slate-400">Sin datos de estados registrados.</p>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVIDAD RECIENTE (TABLA) -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+    <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+      <div>
+        <h2 class="text-sm font-bold text-slate-900">Actividad Reciente</h2>
+        <p class="text-2xs text-slate-500">Últimos 10 movimientos registrados en el sistema</p>
+      </div>
+      <a routerLink="/movimientos" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold">
+        Ver todos →
+      </a>
+    </div>
+
+    @if (cargando()) {
+      <div class="p-8 text-center text-slate-400 animate-pulse text-xs">Cargando actividad...</div>
+    } @else {
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-600">
+          <thead class="bg-slate-50/70 border-b border-slate-100 text-slate-700 uppercase font-semibold">
+            <tr>
+              <th class="px-5 py-3">Fecha</th>
+              <th class="px-5 py-3">Tipo</th>
+              <th class="px-5 py-3">Descripción</th>
+              <th class="px-5 py-3">Trayecto</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            @for (m of movimientosRecientes(); track m.id) {
+              <tr class="hover:bg-slate-50/60 transition">
+                <td class="px-5 py-3 whitespace-nowrap text-slate-500 font-medium">
+                  {{ tiempoRelativo(m.fecha) }}
+                </td>
+                <td class="px-5 py-3">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold capitalize border"
+                    [ngClass]="tipoBadgeClass(m.tipo)">
+                    {{ m.tipo }}
+                  </span>
+                </td>
+                <td class="px-5 py-3">
+                  @if (m.activos) {
+                    <span class="font-semibold text-slate-800">{{ m.activos.codigo_activo }}</span>
+                    <span class="text-2xs text-slate-400 ml-1">(Equipo)</span>
+                  } @else if (m.items) {
+                    <span class="font-semibold text-slate-800">{{ m.items.nombre }}</span>
+                    <span class="text-2xs text-slate-400 ml-1 font-mono">({{ m.items.sku }})</span>
+                  } @else {
+                    <span class="text-slate-400">—</span>
+                  }
+                </td>
+                <td class="px-5 py-3 text-slate-500">
+                  @if (m.almacen_origen && m.almacen_destino) {
+                    <span>{{ m.almacen_origen.nombre }} → {{ m.almacen_destino.nombre }}</span>
+                  } @else if (m.almacen_destino) {
+                    <span>Destino: {{ m.almacen_destino.nombre }}</span>
+                  } @else if (m.almacen_origen) {
+                    <span>Origen: {{ m.almacen_origen.nombre }}</span>
+                  } @else {
+                    <span>—</span>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="px-5 py-8 text-center text-slate-400">
+                  Sin actividad reciente registrada.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>
